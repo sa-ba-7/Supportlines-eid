@@ -125,13 +125,6 @@
       color: #93a1ae;
     }
 
-    .hint {
-      margin-top: 2px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.7;
-    }
-
     button {
       margin-top: 4px;
       border: none;
@@ -228,7 +221,6 @@
           "اختَر اللغة، اكتب اسمك، ثم حمّل بطاقة تهنئة العيد الجاهزة باسمك بصيغة PNG لاستخدامها أو إرسالها مباشرة.",
         labelName: "الاسم / Name",
         placeholder: "اكتب الاسم هنا / Enter your name here",
-        hint: "سيتم وضع الاسم داخل الشريط الأبيض في البطاقة النهائية بشكل تلقائي.",
         button: "تحميل البطاقة",
         alert: "فضلاً اكتب الاسم أولاً",
         fileLang: "Arabic",
@@ -239,7 +231,7 @@
         minFontSize: 24,
         fillStyle: "#000000",
         xRatio: 0.5,
-        yRatio: 0.798
+        yRatio: 0.836
       },
       en: {
         title: "Create Your Eid Greeting Card",
@@ -247,7 +239,6 @@
           "Choose the language, enter your name, then download your personalized Eid greeting card as a PNG file.",
         labelName: "الاسم / Name",
         placeholder: "اكتب الاسم هنا / Enter your name here",
-        hint: "Your name will be placed automatically inside the white bar in the final card.",
         button: "Download Card",
         alert: "Please enter the name first",
         fileLang: "English",
@@ -258,14 +249,13 @@
         minFontSize: 24,
         fillStyle: "#000000",
         xRatio: 0.5,
-        yRatio: 0.798
+        yRatio: 0.836
       }
     };
 
     const titleEl = document.querySelector("h1");
     const subtitleEl = document.querySelector(".subtitle");
     const labelNameEl = document.querySelector('label[for="name"]');
-    const hintEl = document.querySelector(".hint");
 
     function updateUI() {
       const lang = langSelect.value;
@@ -278,7 +268,6 @@
       subtitleEl.textContent = s.subtitle;
       labelNameEl.textContent = s.labelName;
       nameInput.placeholder = s.placeholder;
-      hintEl.textContent = s.hint;
       downloadBtn.textContent = s.button;
     }
 
