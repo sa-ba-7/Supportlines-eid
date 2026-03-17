@@ -5,10 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Support Lines Eid Cards</title>
 
+<!-- خط عربي مرتب -->
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap" rel="stylesheet">
+
 <style>
 body{
   margin:0;
-  font-family: Arial, Tahoma;
+  font-family: 'Cairo', Arial, Tahoma, sans-serif;
   background:#f4f6f8;
   display:flex;
   justify-content:center;
@@ -51,7 +54,9 @@ button{
   font-weight:bold;
 }
 
-canvas{display:none;}
+canvas{
+  display:none;
+}
 </style>
 </head>
 
@@ -98,25 +103,25 @@ function generateCard(){
 
     ctx.drawImage(img, 0, 0);
 
-    // 🔥 خط أجمل
+    // اختيار الخط
     let fontFamily = lang === "ar"
-      ? "Tahoma, Arial"
+      ? "'Cairo', Tahoma"
       : "Arial";
 
-    // 🔥 تصغير تلقائي للنص
+    // تصغير تلقائي للنص
     let fontSize = 70;
     do{
       ctx.font = "bold " + fontSize + "px " + fontFamily;
       fontSize -= 2;
-    } while(ctx.measureText(name).width > 500 && fontSize > 30);
+    } while(ctx.measureText(name).width > 520 && fontSize > 30);
 
     ctx.fillStyle = "#0b3550";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
-    // 🎯 المكان الجديد (داخل المستطيل الأبيض)
+    // 🎯 المكان داخل المستطيل الأبيض (مضبوط)
     const x = canvas.width / 2;
-    const y = canvas.height * 0.72; // هذا السر 👈
+    const y = canvas.height - 260;
 
     ctx.fillText(name, x, y);
 
@@ -126,6 +131,11 @@ function generateCard(){
     link.click();
   };
 
+  img.onerror = function(){
+    alert("تأكدي الصور بنفس مكان index.html");
+  };
+
+  // كسر الكاش
   img.src = images[lang] + "?v=" + Date.now();
 }
 </script>
