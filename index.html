@@ -176,6 +176,13 @@
       transform: none;
     }
 
+    .footer-note {
+      margin-top: 16px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
+    }
 
     canvas {
       display: none;
@@ -229,16 +236,10 @@
         </div>
       </div>
 
-      <div class="preview-box">
-        <p class="preview-title">ملاحظة</p>
-        <p class="preview-note">
-          تم ضبط مكان الاسم داخل المستطيل الأبيض في التصميم النهائي، مع استخدام
-          خط أوضح ومحاذاة أدق عند التحميل.
-        </p>
-      </div>
 
       <button id="downloadBtn" type="button">تحميل البطاقة</button>
     </div>
+
 
     <canvas id="cardCanvas"></canvas>
   </div>
@@ -268,11 +269,12 @@
         fileLang: "Arabic",
         fontFamily: '"Cairo", Tahoma, Arial, sans-serif',
         fontWeight: 700,
-        maxTextWidth: 430,
-        startFontSize: 56,
-        minFontSize: 28,
+        maxTextWidth: 500,
+        startFontSize: 58,
+        minFontSize: 24,
         x: 819,
-        y: 1670
+        y: 1545,
+        fillStyle: "#1a2e3b"
       },
       en: {
         title: "Create Your Eid Greeting Card",
@@ -286,11 +288,12 @@
         fileLang: "English",
         fontFamily: '"Poppins", Arial, Tahoma, sans-serif',
         fontWeight: 700,
-        maxTextWidth: 440,
+        maxTextWidth: 500,
         startFontSize: 52,
-        minFontSize: 26,
+        minFontSize: 24,
         x: 819,
-        y: 1670
+        y: 1545,
+        fillStyle: "#1a2e3b"
       }
     };
 
@@ -382,10 +385,8 @@
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.direction = lang === "ar" ? "rtl" : "ltr";
-        ctx.fillStyle = "#0b3550";
+        ctx.fillStyle = s.fillStyle;
         ctx.font = `${s.fontWeight} ${fontSize}px ${s.fontFamily}`;
-
-        // ضبط دقيق لمكان الاسم داخل المستطيل الأبيض
         ctx.fillText(name, s.x, s.y);
         ctx.restore();
 
