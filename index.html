@@ -1,120 +1,146 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eid Cards</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eid Cards</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
 
-<style>
-body{
-  margin:0;
-  font-family:'Cairo',sans-serif;
-  background:#f4f6f8;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-}
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: #f4f6f8;
+      padding: 30px 15px;
+      color: #0b3550;
+    }
 
-.container{
-  background:#fff;
-  padding:20px;
-  border-radius:16px;
-  width:90%;
-  max-width:400px;
-  text-align:center;
-  box-shadow:0 10px 25px rgba(0,0,0,0.1);
-}
+    .wrap {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
 
-select,input,button{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border-radius:10px;
-  font-size:15px;
-}
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
 
-button{
-  background:#f45b1f;
-  color:#fff;
-  border:none;
-  font-weight:bold;
-}
-</style>
+    p {
+      text-align: center;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    select, input, button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
+
+    button {
+      background: #f45b1f;
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.95;
+    }
+
+    canvas {
+      display: none;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="container">
-  <h3>Eid Card Generator</h3>
+  <div class="wrap">
+    <h1>Eid Greeting Card</h1>
+    <p>اختاري اللغة واكتبي اسمك ثم حمّلي البطاقة</p>
 
-  <select id="lang">
-    <option value="ar">العربية</option>
-    <option value="en">English</option>
-  </select>
+    <label>اللغة / Language</label>
+    <select id="lang">
+      <option value="ar">العربية</option>
+      <option value="en">English</option>
+    </select>
 
-  <input id="name" placeholder="اكتب الاسم / Enter name">
+    <label>الاسم / Name</label>
+    <input id="name" type="text" placeholder="اكتب الاسم هنا">
 
-  <button onclick="generate()">Download</button>
-</div>
+    <button onclick="generate()">Download</button>
 
-<canvas id="c"></canvas>
+    <canvas id="canvas"></canvas>
+  </div>
 
-<script>
-const imgs = {
-  ar: "eid-ar.png",
-  en: "eid-en.png"
-};
+  <script>
+    const images = {
+      ar: "eid-ar.png",
+      en: "eid-en.png"
+    };
 
-function generate(){
-  const name = document.getElementById("name").value.trim();
-  const lang = document.getElementById("lang").value;
+    function generate() {
+      const name = document.getElementById("name").value.trim();
+      const lang = document.getElementById("lang").value;
 
-  if(!name){
-    alert("اكتب الاسم");
-    return;
-  }
+      if (!name) {
+        alert("اكتب الاسم أول");
+        return;
+      }
 
-  const img = new Image();
+      const img = new Image();
+      img.src = images[lang];
 
-  img.onload = function(){
-    const canvas = document.getElementById("c");
-    const ctx = canvas.getContext("2d");
+      img.onload = function () {
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
 
-    canvas.width = img.width;
-    canvas.height = img.height;
+        canvas.width = img.width;
+        canvas.height = img.height;
 
-    ctx.drawImage(img,0,0);
+        ctx.drawImage(img, 0, 0);
 
-    // الخط
-    let fontSize = 70;
-    do{
-      ctx.font = "bold " + fontSize + "px Cairo";
-      fontSize -= 2;
-    }while(ctx.measureText(name).width > 500 && fontSize > 30);
+        // إعداد الخط
+        const fontSize = img.width / 18;
+        ctx.font = `bold ${fontSize}px Arial`;
+        ctx.fillStyle = "#000";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
 
-    ctx.fillStyle = "#0b3550";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
+        // مكان الاسم (وسط الصورة تقريباً - فوق المربع الأبيض)
+        const x = canvas.width / 2;
+        const y = canvas.height * 0.72;
 
-    const x = canvas.width / 2;
+        ctx.fillText(name, x, y);
 
-    // 🎯 هنا السر: مركز المستطيل الأبيض
-    const y = canvas.height * 0.84;
+        // تحميل الصورة
+        const link = document.createElement("a");
+        link.download = "eid-card.png";
+        link.href = canvas.toDataURL();
+        link.click();
+      };
 
-    ctx.fillText(name, x, y);
-
-    const link = document.createElement("a");
-    link.download = "eid_card.png";
-    link.href = canvas.toDataURL();
-    link.click();
-  };
-
-  img.src = imgs[lang] + "?v=" + Date.now();
-}
-</script>
+      img.onerror = function () {
+        alert("تأكد إن الصور موجودة بنفس المجلد وبنفس الاسم");
+      };
+    }
+  </script>
 
 </body>
 </html>
