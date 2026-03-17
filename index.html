@@ -49,16 +49,9 @@ button{
   color:white;
   border:none;
   font-weight:bold;
-  cursor:pointer;
 }
 
-button:hover{
-  opacity:.95;
-}
-
-canvas{
-  display:none;
-}
+canvas{display:none;}
 </style>
 </head>
 
@@ -74,15 +67,15 @@ canvas{
 
   <input id="name" placeholder="Enter Name / اكتب الاسم">
 
-  <button onclick="generateCard()">Download Card</button>
+  <button onclick="generateCard()">Download</button>
 </div>
 
 <canvas id="canvas"></canvas>
 
 <script>
 const images = {
-  ar: "eid-ar.png",
-  en: "eid-en.png"
+  ar: "./eid-ar.png",
+  en: "./eid-en.png"
 };
 
 function generateCard(){
@@ -90,11 +83,12 @@ function generateCard(){
   const lang = document.getElementById("lang").value;
 
   if(!name){
-    alert("Please enter name / الرجاء كتابة الاسم");
+    alert("اكتب الاسم");
     return;
   }
 
   const img = new Image();
+  img.crossOrigin = "anonymous";
 
   img.onload = function(){
     const canvas = document.getElementById("canvas");
@@ -105,12 +99,9 @@ function generateCard(){
 
     ctx.drawImage(img, 0, 0);
 
-    // ضبط الخط حسب اللغة
-    let fontFamily = lang === "ar" ? "Tahoma" : "Arial";
-
     let fontSize = 60;
     do{
-      ctx.font = "bold " + fontSize + "px " + fontFamily;
+      ctx.font = "bold " + fontSize + "px Arial";
       fontSize -= 2;
     } while(ctx.measureText(name).width > 500 && fontSize > 30);
 
@@ -118,13 +109,8 @@ function generateCard(){
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
-    // مكان الاسم داخل المستطيل الأبيض
-    const x = canvas.width / 2;
-    const y = 1680;
+    ctx.fillText(name, canvas.width/2, 1680);
 
-    ctx.fillText(name, x, y);
-
-    // تحميل الصورة
     const link = document.createElement("a");
     link.download = "eid_card.png";
     link.href = canvas.toDataURL("image/png");
@@ -132,10 +118,10 @@ function generateCard(){
   };
 
   img.onerror = function(){
-    alert("الصورة ما انحملت. تأكد ان الصور مرفوعة بنفس مكان index.html");
+    alert("المشكلة من الكاش، سوّي تحديث قوي للموقع");
   };
 
-  img.src = images[lang];
+  img.src = images[lang] + "?v=" + new Date().getTime(); // 🔥 كسر الكاش
 }
 </script>
 
