@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eid Cards</title>
+
+<style>
+body{margin:0;font-family:Arial;background:#f4f6f8;display:flex;justify-content:center;align-items:center;height:100vh}
+.box{background:#fff;padding:20px;border-radius:14px;box-shadow:0 10px 20px rgba(0,0,0,.1);width:90%;max-width:350px;text-align:center}
+input,select,button{width:100%;padding:12px;margin-top:10px;border-radius:10px;font-size:15px}
+input,select{border:1px solid #ddd}
+button{background:#f45b1f;color:#fff;border:none;font-weight:bold}
+canvas{display:none}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+<select id="lang">
+<option value="ar">العربية</option>
+<option value="en">English</option>
+</select>
+
+<input id="name" placeholder="Enter Name / اكتب الاسم">
+
+<button onclick="go()">Download</button>
+</div>
+
+<canvas id="c"></canvas>
+
+<script>
+const images = {
+  ar: "https://i.imgur.com/Eid_CardAR.png",
+  en: "https://i.imgur.com/Eid_CardEN.png"
+};
+
+function go(){
+let name=document.getElementById("name").value.trim();
+let lang=document.getElementById("lang").value;
+if(!name){alert("اكتب الاسم");return;}
+
+let img=new Image();
+img.crossOrigin="anonymous";
+
+img.onload=function(){
+let c=document.getElementById("c");
+let ctx=c.getContext("2d");
+
+c.width=img.width;
+c.height=img.height;
+
+ctx.drawImage(img,0,0);
+
+ctx.fillStyle="#0b3550";
+ctx.textAlign="center";
+ctx.font="bold 55px Arial";
+
+ctx.fillText(name,c.width/2,1680);
+
+let a=document.createElement("a");
+a.download="eid.png";
+a.href=c.toDataURL();
+a.click();
+};
+
+img.src=images[lang];
+}
+</script>
+
+</body>
+</html>
