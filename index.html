@@ -88,7 +88,6 @@ function generateCard(){
   }
 
   const img = new Image();
-  img.crossOrigin = "anonymous";
 
   img.onload = function(){
     const canvas = document.getElementById("canvas");
@@ -99,9 +98,15 @@ function generateCard(){
 
     ctx.drawImage(img, 0, 0);
 
-    let fontSize = 60;
+    // 🔥 خط أجمل
+    let fontFamily = lang === "ar"
+      ? "Tahoma, Arial"
+      : "Arial";
+
+    // 🔥 تصغير تلقائي للنص
+    let fontSize = 70;
     do{
-      ctx.font = "bold " + fontSize + "px Arial";
+      ctx.font = "bold " + fontSize + "px " + fontFamily;
       fontSize -= 2;
     } while(ctx.measureText(name).width > 500 && fontSize > 30);
 
@@ -109,7 +114,11 @@ function generateCard(){
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
-    ctx.fillText(name, canvas.width/2, 1680);
+    // 🎯 المكان الجديد (داخل المستطيل الأبيض)
+    const x = canvas.width / 2;
+    const y = canvas.height * 0.72; // هذا السر 👈
+
+    ctx.fillText(name, x, y);
 
     const link = document.createElement("a");
     link.download = "eid_card.png";
@@ -117,11 +126,7 @@ function generateCard(){
     link.click();
   };
 
-  img.onerror = function(){
-    alert("المشكلة من الكاش، سوّي تحديث قوي للموقع");
-  };
-
-  img.src = images[lang] + "?v=" + new Date().getTime(); // 🔥 كسر الكاش
+  img.src = images[lang] + "?v=" + Date.now();
 }
 </script>
 
