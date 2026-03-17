@@ -132,28 +132,6 @@
       line-height: 1.7;
     }
 
-    .preview-box {
-      margin-top: 6px;
-      background: linear-gradient(135deg, #f8fafc, #eef4f8);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 18px;
-    }
-
-    .preview-title {
-      margin: 0 0 10px;
-      font-size: 14px;
-      font-weight: 800;
-      color: var(--text);
-    }
-
-    .preview-note {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.8;
-    }
-
     button {
       margin-top: 4px;
       border: none;
@@ -174,14 +152,6 @@
       opacity: 0.7;
       cursor: wait;
       transform: none;
-    }
-
-    .footer-note {
-      margin-top: 16px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.8;
     }
 
     canvas {
@@ -231,15 +201,10 @@
           maxlength="40"
           placeholder="اكتب الاسم هنا / Enter your name here"
         />
-        <div class="hint">
-          سيتم وضع الاسم داخل الشريط الأبيض في البطاقة النهائية بشكل تلقائي.
-        </div>
       </div>
-
 
       <button id="downloadBtn" type="button">تحميل البطاقة</button>
     </div>
-
 
     <canvas id="cardCanvas"></canvas>
   </div>
@@ -269,12 +234,12 @@
         fileLang: "Arabic",
         fontFamily: '"Cairo", Tahoma, Arial, sans-serif',
         fontWeight: 700,
-        maxTextWidth: 500,
-        startFontSize: 58,
+        maxTextWidthRatio: 0.34,
+        startFontSize: 60,
         minFontSize: 24,
-        x: 819,
-        y: 1545,
-        fillStyle: "#013855"
+        fillStyle: "#000000",
+        xRatio: 0.5,
+        yRatio: 0.798
       },
       en: {
         title: "Create Your Eid Greeting Card",
@@ -288,12 +253,12 @@
         fileLang: "English",
         fontFamily: '"Poppins", Arial, Tahoma, sans-serif',
         fontWeight: 700,
-        maxTextWidth: 500,
-        startFontSize: 52,
+        maxTextWidthRatio: 0.34,
+        startFontSize: 54,
         minFontSize: 24,
-        x: 819,
-        y: 1460,
-        fillStyle: "#1a2e3b"
+        fillStyle: "#000000",
+        xRatio: 0.5,
+        yRatio: 0.798
       }
     };
 
@@ -372,11 +337,15 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 0, 0);
 
+        const x = canvas.width * s.xRatio;
+        const y = canvas.height * s.yRatio;
+        const maxTextWidth = canvas.width * s.maxTextWidthRatio;
+
         const fontSize = fitFontSize(
           name,
           s.fontFamily,
           s.fontWeight,
-          s.maxTextWidth,
+          maxTextWidth,
           s.startFontSize,
           s.minFontSize
         );
@@ -387,7 +356,7 @@
         ctx.direction = lang === "ar" ? "rtl" : "ltr";
         ctx.fillStyle = s.fillStyle;
         ctx.font = `${s.fontWeight} ${fontSize}px ${s.fontFamily}`;
-        ctx.fillText(name, s.x, s.y);
+        ctx.fillText(name, x, y, maxTextWidth);
         ctx.restore();
 
         const safeName = sanitizeFileName(name);
@@ -398,8 +367,8 @@
       } catch (error) {
         alert(
           lang === "ar"
-            ? "تعذر تحميل الصورة. تأكدي أن الملفات eid-ar.png و eid-en.png موجودة بنفس المجلد."
-            : "Could not load image. Make sure eid-ar.png and eid-en.png are in the same folder."
+            ? "تعذر تحميل الصورة. تأكدي من وجود ملفات الصور في نفس المجلد."
+            : "Could not load image. Make sure the image files are in the same folder."
         );
       } finally {
         downloadBtn.disabled = false;
