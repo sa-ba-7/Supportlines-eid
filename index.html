@@ -1,71 +1,141 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eid Cards</title>
+<title>Support Lines Eid Cards</title>
 
 <style>
-body{margin:0;font-family:Arial;background:#f4f6f8;display:flex;justify-content:center;align-items:center;height:100vh}
-.box{background:#fff;padding:20px;border-radius:14px;box-shadow:0 10px 20px rgba(0,0,0,.1);width:90%;max-width:350px;text-align:center}
-input,select,button{width:100%;padding:12px;margin-top:10px;border-radius:10px;font-size:15px}
-input,select{border:1px solid #ddd}
-button{background:#f45b1f;color:#fff;border:none;font-weight:bold}
-canvas{display:none}
+body{
+  margin:0;
+  font-family: Arial, Tahoma;
+  background:#f4f6f8;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+}
+
+.container{
+  width:90%;
+  max-width:400px;
+  background:white;
+  padding:22px;
+  border-radius:16px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+  text-align:center;
+}
+
+h2{
+  margin-bottom:12px;
+  color:#0b3550;
+  font-size:20px;
+}
+
+select,input,button{
+  width:100%;
+  padding:13px;
+  margin-top:10px;
+  border-radius:10px;
+  font-size:15px;
+}
+
+input,select{
+  border:1px solid #ddd;
+}
+
+button{
+  background:#f45b1f;
+  color:white;
+  border:none;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:hover{
+  opacity:.95;
+}
+
+canvas{
+  display:none;
+}
 </style>
 </head>
 
 <body>
 
-<div class="box">
-<select id="lang">
-<option value="ar">العربية</option>
-<option value="en">English</option>
-</select>
+<div class="container">
+  <h2>Eid Card Generator</h2>
 
-<input id="name" placeholder="Enter Name / اكتب الاسم">
+  <select id="lang">
+    <option value="ar">العربية</option>
+    <option value="en">English</option>
+  </select>
 
-<button onclick="go()">Download</button>
+  <input id="name" placeholder="Enter Name / اكتب الاسم">
+
+  <button onclick="generateCard()">Download Card</button>
 </div>
 
-<canvas id="c"></canvas>
+<canvas id="canvas"></canvas>
 
 <script>
 const images = {
-  ar: "https://i.imgur.com/2WZtOD8.png",
-  en: "https://i.imgur.com/YOUR_EN_IMAGE.png"
+  ar: "eid-ar.png",
+  en: "eid-en.png"
 };
 
-function go(){
-let name=document.getElementById("name").value.trim();
-let lang=document.getElementById("lang").value;
-if(!name){alert("اكتب الاسم");return;}
+function generateCard(){
+  const name = document.getElementById("name").value.trim();
+  const lang = document.getElementById("lang").value;
 
-let img=new Image();
-img.crossOrigin="anonymous";
+  if(!name){
+    alert("Please enter name / الرجاء كتابة الاسم");
+    return;
+  }
 
-img.onload=function(){
-let c=document.getElementById("c");
-let ctx=c.getContext("2d");
+  const img = new Image();
 
-c.width=img.width;
-c.height=img.height;
+  img.onload = function(){
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
 
-ctx.drawImage(img,0,0);
+    canvas.width = img.width;
+    canvas.height = img.height;
 
-ctx.fillStyle="#0b3550";
-ctx.textAlign="center";
-ctx.font="bold 55px Arial";
+    ctx.drawImage(img, 0, 0);
 
-ctx.fillText(name,c.width/2,1680);
+    // ضبط الخط حسب اللغة
+    let fontFamily = lang === "ar" ? "Tahoma" : "Arial";
 
-let a=document.createElement("a");
-a.download="eid.png";
-a.href=c.toDataURL();
-a.click();
-};
+    let fontSize = 60;
+    do{
+      ctx.font = "bold " + fontSize + "px " + fontFamily;
+      fontSize -= 2;
+    } while(ctx.measureText(name).width > 500 && fontSize > 30);
 
-img.src=images[lang];
+    ctx.fillStyle = "#0b3550";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    // مكان الاسم داخل المستطيل الأبيض
+    const x = canvas.width / 2;
+    const y = 1680;
+
+    ctx.fillText(name, x, y);
+
+    // تحميل الصورة
+    const link = document.createElement("a");
+    link.download = "eid_card.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  };
+
+  img.onerror = function(){
+    alert("الصورة ما انحملت. تأكد ان الصور مرفوعة بنفس مكان index.html");
+  };
+
+  img.src = images[lang];
 }
 </script>
 
